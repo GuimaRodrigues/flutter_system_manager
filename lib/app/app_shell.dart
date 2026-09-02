@@ -114,7 +114,7 @@ class _ExpandedBrand extends StatelessWidget {
           Expanded(
             child: Text(
               'System Manager',
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.visible,
               style: Theme.of(context).textTheme.titleMedium
                   ?.copyWith(fontWeight: FontWeight.w800),
             ),
