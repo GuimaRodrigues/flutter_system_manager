@@ -19,6 +19,24 @@ Flutter System Manager is intentionally small: it inspects the local machine, di
 - Unit, Cubit, and widget tests
 - GitHub Actions continuous integration
 
+## Screenshots
+
+### System overview
+
+![System overview with anonymized machine, user, and public IP](docs/screenshots/system-overview-anonymized.png)
+
+> Privacy note: the machine name, Windows user, and public IP are intentionally blurred in the repository image. No original sensitive values are stored under `docs/screenshots/`.
+
+### Processes and services
+
+| Running processes | Windows services |
+| --- | --- |
+| ![Read-only running process list](docs/screenshots/running-processes.png) | ![Read-only Windows service list](docs/screenshots/windows-services.png) |
+
+### Safe command runner
+
+![Predefined Windows command runner](docs/screenshots/command-runner.png)
+
 ## Architecture
 
 The UI never starts native processes or makes HTTP requests directly.
@@ -62,6 +80,13 @@ These are pragmatic Clean Architecture concepts rather than a ceremonial collect
 ## Project structure
 
 ```text
+.github/
+└── workflows/
+    ├── ci.yml
+    └── release.yml
+
+LICENSE
+
 lib/
 ├── app/
 │   ├── app.dart
@@ -96,13 +121,22 @@ lib/
 │       └── presentation/{cubit,pages}/
 └── main.dart
 
+docs/
+└── screenshots/
+    ├── command-runner.png
+    ├── running-processes.png
+    ├── system-overview-anonymized.png
+    └── windows-services.png
+
 test/
+├── core/platform/
+│   └── windows_system_service_test.dart
 ├── features/
 │   ├── commands/
+│   ├── network/
 │   └── system/
 └── widget_test.dart
 
-.github/workflows/ci.yml
 ```
 
 The feature folders stay shallow on purpose. This project separates platform, network, state, and presentation concerns without adding repository or use-case layers that the scope does not need.
@@ -136,6 +170,18 @@ This application is an inspection-focused demo.
 ## REST integration
 
 The overview retrieves the public IP address from `https://api.ipify.org?format=json`. Networking lives in `PublicIpClient`, outside the widget tree, and includes status-code, timeout, transport, and response-format handling. An internet connection is required only for this secondary card; local Windows features continue to work if the request fails.
+
+## Download the Windows build
+
+Download the latest portable package from [GitHub Releases](https://github.com/GuimaRodrigues/flutter_system_manager/releases/latest). Extract the complete ZIP archive and run `flutter_system_manager.exe`; Flutter does not need to be installed on the target computer.
+
+The release also includes a `.sha256` file for integrity verification:
+
+```powershell
+Get-FileHash .\Flutter-System-Manager-Windows-x64-v1.0.0.zip -Algorithm SHA256
+```
+
+Because this portfolio build is not code-signed, Windows SmartScreen may display an unrecognized-app warning. Review the public source and checksum before running it.
 
 ## Requirements
 
@@ -179,3 +225,7 @@ The GitHub Actions workflow runs on every push and pull request. A Windows runne
 ## Scope and extension points
 
 This is not a full system-administration product. A future platform implementation can implement `SystemService` and be selected at app composition time. Destructive controls, persistence, authentication, cloud infrastructure, and unrestricted command execution are deliberately outside the project scope.
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright © 2026 Guilherme Martins.
